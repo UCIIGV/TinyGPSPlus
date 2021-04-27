@@ -32,6 +32,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define _GNRMCterm   "GNRMC"
 #define _GNGGAterm   "GNGGA"
 
+system_clock::time_point millis(){
+  
+  return std::chrono::system_clock::now();
+
+}
+
 TinyGPSPlus::TinyGPSPlus()
   :  parity(0)
   ,  isChecksumTerm(false)
@@ -299,8 +305,8 @@ double TinyGPSPlus::distanceBetween(double lat1, double long1, double lat2, doub
   double slat2 = sin(lat2);
   double clat2 = cos(lat2);
   delta = (clat1 * slat2) - (slat1 * clat2 * cdlong);
-  delta = sq(delta);
-  delta += sq(clat2 * sdlong);
+  delta = pow(delta, 2);
+  delta += pow(clat2 * sdlong, 2);
   delta = sqrt(delta);
   double denom = (slat1 * slat2) + (clat1 * clat2 * cdlong);
   delta = atan2(delta, denom);
@@ -313,7 +319,7 @@ double TinyGPSPlus::courseTo(double lat1, double long1, double lat2, double long
   // both specified as signed decimal-degrees latitude and longitude.
   // Because Earth is no exact sphere, calculated course may be off by a tiny fraction.
   // Courtesy of Maarten Lamers
-  double dlon = radians(long2-long1);
+  double dlon = long2-long1;
   lat1 = radians(lat1);
   lat2 = radians(lat2);
   double a1 = sin(dlon) * cos(lat2);
@@ -322,7 +328,7 @@ double TinyGPSPlus::courseTo(double lat1, double long1, double lat2, double long
   a2 = atan2(a1, a2);
   if (a2 < 0.0)
   {
-    a2 += TWO_PI;
+    a2 += M_PI*2.0f;
   }
   return degrees(a2);
 }
@@ -464,7 +470,7 @@ TinyGPSCustom::TinyGPSCustom(TinyGPSPlus &gps, const char *_sentenceName, int _t
 
 void TinyGPSCustom::begin(TinyGPSPlus &gps, const char *_sentenceName, int _termNumber)
 {
-   lastCommitTime = 0;
+   lastCommitTime = system_clock::now();
    updated = valid = false;
    sentenceName = _sentenceName;
    termNumber = _termNumber;
