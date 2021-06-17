@@ -1,0 +1,2 @@
+/usr/local/lib/libTinyGPS++.a
+/usr/local/include/TinyGPS++.h

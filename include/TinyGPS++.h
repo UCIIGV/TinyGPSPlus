@@ -26,8 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "CppLinuxSerial/SerialPort.hpp"
 #include "CppLinuxSerial/Exception.hpp"
+
 #include <chrono>
 #include <cmath>
+
 #include <limits.h>
 
 using namespace std::chrono;
@@ -43,7 +45,7 @@ using namespace std::chrono;
 
 typedef uint8_t byte;
 
-system_clock::time_point millis();
+system_clock::time_point currtime();
 
 struct RawDegrees
 {
@@ -60,7 +62,7 @@ struct TinyGPSLocation
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
-   duration<milliseconds> age() const    { return valid ? duration_cast<milliseconds>(millis() - lastCommitTime) : ; }
+   duration<double, std::milli> age()     { return currtime() - lastCommitTime; }
    const RawDegrees &rawLat()     { updated = false; return rawLatData; }
    const RawDegrees &rawLng()     { updated = false; return rawLngData; }
    double lat();
@@ -84,13 +86,13 @@ struct TinyGPSDate
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
-   duration<milliseconds> age() const       { return valid ? duration_cast<milliseconds>(millis() - lastCommitTime) : (uint32_t)ULONG_MAX; }
+   duration<double, std::milli> age() const           { return (currtime() - lastCommitTime); }
 
    uint32_t value()           { updated = false; return date; }
    uint16_t year();
    uint8_t month();
    uint8_t day();
-
+ 
    TinyGPSDate() : valid(false), updated(false), date(0)
    {}
 
@@ -108,7 +110,7 @@ struct TinyGPSTime
 public:
    bool isValid() const       { return valid; }
    bool isUpdated() const     { return updated; }
-   duration<milliseconds> age() const       { return valid ? duration_cast<milliseconds>(millis() - lastCommitTime) : (uint32_t)ULONG_MAX; }
+   duration<double, std::milli> age() const          { return (currtime() - lastCommitTime); }
 
    uint32_t value()           { updated = false; return time; }
    uint8_t hour();
@@ -133,7 +135,7 @@ struct TinyGPSDecimal
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
-   duration<milliseconds> age() const       { return valid ? duration_cast<milliseconds>(millis() - lastCommitTime) : (uint32_t)ULONG_MAX; }
+   duration<double, std::milli> age() const           { return (currtime() - lastCommitTime); }
    int32_t value()         { updated = false; return val; }
 
    TinyGPSDecimal() : valid(false), updated(false), val(0)
@@ -153,7 +155,7 @@ struct TinyGPSInteger
 public:
    bool isValid() const    { return valid; }
    bool isUpdated() const  { return updated; }
-   duration<milliseconds> age() const       { return valid ? duration_cast<milliseconds>(millis() - lastCommitTime) : (uint32_t)ULONG_MAX; }
+   duration<double, std::milli> age() const           { return (currtime() - lastCommitTime); }
    uint32_t value()        { updated = false; return val; }
 
    TinyGPSInteger() : valid(false), updated(false), val(0)
@@ -203,7 +205,7 @@ public:
 
    bool isUpdated() const  { return updated; }
    bool isValid() const    { return valid; }
-   duration<milliseconds> age() const       { return valid ? duration_cast<milliseconds>(millis() - lastCommitTime) : (uint32_t)ULONG_MAX; }
+   duration<double, std::milli> age() const           { return (currtime() - lastCommitTime); }
    const char *value()     { updated = false; return buffer; }
 
 private:

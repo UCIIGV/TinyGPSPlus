@@ -32,9 +32,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define _GNRMCterm   "GNRMC"
 #define _GNGGAterm   "GNGGA"
 
-system_clock::time_point millis(){
-  
+static double radians(const double angle){
+
+  return M_PI*angle/180.0f;
+
+}
+
+
+system_clock::time_point currtime(){
+
   return std::chrono::system_clock::now();
+
+}
+
+static double degrees(const double radians){
+
+  return 180.0f*radians/M_PI;
 
 }
 
@@ -344,7 +357,7 @@ void TinyGPSLocation::commit()
 {
    rawLatData = rawNewLatData;
    rawLngData = rawNewLngData;
-   lastCommitTime = millis();
+   lastCommitTime = currtime();
    valid = updated = true;
 }
 
@@ -375,14 +388,14 @@ double TinyGPSLocation::lng()
 void TinyGPSDate::commit()
 {
    date = newDate;
-   lastCommitTime = millis();
+   lastCommitTime = currtime();
    valid = updated = true;
 }
 
 void TinyGPSTime::commit()
 {
    time = newTime;
-   lastCommitTime = millis();
+   lastCommitTime = currtime();
    valid = updated = true;
 }
 
@@ -442,7 +455,7 @@ uint8_t TinyGPSTime::centisecond()
 void TinyGPSDecimal::commit()
 {
    val = newval;
-   lastCommitTime = millis();
+   lastCommitTime = currtime();
    valid = updated = true;
 }
 
@@ -454,7 +467,7 @@ void TinyGPSDecimal::set(const char *term)
 void TinyGPSInteger::commit()
 {
    val = newval;
-   lastCommitTime = millis();
+   lastCommitTime = currtime();
    valid = updated = true;
 }
 
@@ -484,7 +497,7 @@ void TinyGPSCustom::begin(TinyGPSPlus &gps, const char *_sentenceName, int _term
 void TinyGPSCustom::commit()
 {
    strcpy(this->buffer, this->stagingBuffer);
-   lastCommitTime = millis();
+   lastCommitTime = currtime();
    valid = updated = true;
 }
 

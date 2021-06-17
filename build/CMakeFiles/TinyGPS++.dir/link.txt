@@ -1,0 +1,2 @@
+/usr/bin/ar qc libTinyGPS++.a CMakeFiles/TinyGPS++.dir/home/orion/Code/Projects/TinyGPSPlus/src/TinyGPS++.cpp.o
+/usr/bin/ranlib libTinyGPS++.a
